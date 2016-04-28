@@ -25,6 +25,8 @@
 		<module>org.eclipse.vorto.codegen.examples.latex</module>
 		<module>org.eclipse.vorto.codegen.examples.jsonschema</module>
 		<module>org.eclipse.vorto.codegen.examples.coap</module>
+		<module>org.eclipse.vorto.codegen.examples.freemarker</module>
+		
   </modules>
   
 </project>

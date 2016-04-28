@@ -15,6 +15,7 @@
 package org.eclipse.vorto.core.model;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -64,7 +65,8 @@ public interface IModelProject extends IModelElement {
 	 * @return instance if IMapping
 	 */
 	Collection<MappingModel> getMapping(String targetPlatform);
-
+	
+	Map<String, byte[]> getNonMappingFiles();
 	/**
 	 * Saves the actual model project, after it has been modified, e.g. after
 	 * {@link IModelProject#addReference(IModelElement)}

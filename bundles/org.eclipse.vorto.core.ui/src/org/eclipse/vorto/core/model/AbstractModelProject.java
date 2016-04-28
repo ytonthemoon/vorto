@@ -28,6 +28,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -46,12 +47,15 @@ import org.eclipse.vorto.core.service.IModelElementResolver;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
 import org.eclipse.vorto.core.service.SharedModelServiceFactory;
 
+import com.google.common.base.Strings;
+import com.google.common.io.ByteStreams;
+
 public abstract class AbstractModelProject extends AbstractModelElement implements IModelProject {
 
 	protected IProject project;
 	protected IModelParser modelParser;
 	protected ModelFileLookupHelper modelLookupHelper;
-	
+
 	protected static final String MAPPINGS_DIR = "src/mappings";
 
 	private Model model;
@@ -77,11 +81,11 @@ public abstract class AbstractModelProject extends AbstractModelElement implemen
 		}
 		addModelReference(reference);
 	}
-	
+
 	private void addProjectReference(IModelProject modelProject) {
 		try {
-			Set<IProject> immutableReferencedProjects = new HashSet<IProject>(Arrays.asList(project
-					.getReferencedProjects()));
+			Set<IProject> immutableReferencedProjects = new HashSet<IProject>(
+					Arrays.asList(project.getReferencedProjects()));
 			if (immutableReferencedProjects == null || immutableReferencedProjects.isEmpty()) {
 				immutableReferencedProjects = new HashSet<IProject>();
 			}
@@ -140,45 +144,79 @@ public abstract class AbstractModelProject extends AbstractModelElement implemen
 	}
 
 	@Override
-	public Collection<MappingModel> getMapping(String targetPlatform){
-		return MappingResourceFactory.getInstance().getMappingModels(this, targetPlatform);		
+	public Collection<MappingModel> getMapping(String targetPlatform) {
+		return MappingResourceFactory.getInstance().getMappingModels(this, targetPlatform);
 	}
-	
+
+	public Map<String, byte[]> getNonMappingFiles() {
+		Map<String, byte[]> nonMappingFiles = new HashMap<String, byte[]>();
+
+		try {
+			getProject().accept(new IResourceVisitor() {
+				public boolean visit(IResource resource) throws CoreException {
+					if (resource instanceof IFile) {
+						IFile file = (IFile) resource;
+						if (isNonMappingFile(file)) {
+							try {
+								nonMappingFiles.put(file.getProjectRelativePath().toString(),
+										ByteStreams.toByteArray(file.getContents()));
+							} catch (IOException e) {
+								e.printStackTrace();
+								throw new RuntimeException(e);
+							}
+						}
+					}
+					return true;
+				}
+
+				boolean isNonMappingFile(IFile file) {
+					return !(Strings.isNullOrEmpty(file.getFileExtension()) || file.isHidden()
+							|| file.getFileExtension().equals("infomodel") || file.getFileExtension().equals("type")
+							|| file.getFileExtension().equals("fbmodel") || file.getFileExtension().equals("mapping"));
+				}
+
+			});
+		} catch (CoreException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+
+		return nonMappingFiles;
+	}
+
 	protected IModelElementResolver[] getResolvers() {
-		return new IModelElementResolver[] {
-				ModelProjectServiceFactory.getDefault().getWorkspaceProjectResolver(),
-				SharedModelServiceFactory.getDefault().getSharedModelResolver(this)
-		};
+		return new IModelElementResolver[] { ModelProjectServiceFactory.getDefault().getWorkspaceProjectResolver(),
+				SharedModelServiceFactory.getDefault().getSharedModelResolver(this) };
 	}
 
 	public IModelElement getSharedModelReference(ModelId modelId) {
 		IFile[] sharedModelFiles = modelLookupHelper.getSharedFilesByModelType(modelId.getModelType());
-		for(IFile sharedModelFile : sharedModelFiles) {
+		for (IFile sharedModelFile : sharedModelFiles) {
 			Model model = getSharedModel(sharedModelFile, modelId.getModelType());
 			if (modelEquals(modelId, model)) {
 				return SharedModelServiceFactory.getDefault().createSharedModelElement(this, sharedModelFile, model);
 			}
 		}
-		
+
 		return null;
 	}
 
 	private boolean modelEquals(ModelId modelId, Model model) {
-		return modelId.getName().equalsIgnoreCase(model.getName()) &&
-				modelId.getNamespace().equalsIgnoreCase(model.getNamespace()) &&
-				modelId.getVersion().equals(model.getVersion());
+		return modelId.getName().equalsIgnoreCase(model.getName())
+				&& modelId.getNamespace().equalsIgnoreCase(model.getNamespace())
+				&& modelId.getVersion().equals(model.getVersion());
 	}
 
 	private Model getSharedModel(IFile file, ModelType modelType) {
 		if (modelType == ModelType.Functionblock) {
 			return modelParser.parseModel(file, FunctionblockModel.class);
-		} else if (modelType == ModelType.InformationModel){
+		} else if (modelType == ModelType.InformationModel) {
 			return modelParser.parseModel(file, InformationModel.class);
 		} else {
 			return modelParser.parseModel(file, Type.class);
 		}
 	}
-	
+
 	public void addMapping(ModelId mappingModelId, byte[] mappingContent) {
 		try {
 			IFolder folder = project.getFolder(MAPPINGS_DIR);
@@ -193,7 +231,7 @@ public abstract class AbstractModelProject extends AbstractModelElement implemen
 
 			file.create(new ByteArrayInputStream(mappingContent), true, new NullProgressMonitor());
 		} catch (CoreException e) {
-			throw new RuntimeException("Problem when saving mapping content",e);
+			throw new RuntimeException("Problem when saving mapping content", e);
 		}
 	}
 }

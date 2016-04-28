@@ -94,7 +94,7 @@ public class MappingResourceFactory {
 		mappingModels.addAll(getReferenceMappingModels(ownerModelElement, targetPlatform));
 		return mappingModels;
 	}
-
+	
 	/**
 	 * Create IMapping instance based on given Mapping Model and child IMapping 
 	 * e.g. Assuming there are two model definitions,  "MyDevice.infomodel" and "MyFunctionBlock.fbmodel", and information model
@@ -146,6 +146,11 @@ public class MappingResourceFactory {
 
 		if (mappingModel == null) {
 			mappingModel = getMappingModelFromFolder(ownerModelElement, targetPlatform,
+					ownerModelElement.getModelFile().getProject().getFolder("src/mappings/" + targetPlatform));
+		}
+		
+		if (mappingModel == null) {
+			mappingModel = getMappingModelFromFolder(ownerModelElement, targetPlatform,
 					ownerModelElement.getModelFile().getProject().getFolder("src/models"));
 		}
 		
@@ -168,7 +173,7 @@ public class MappingResourceFactory {
 		}
 		return referenceMappings;
 	}
-
+	
 	private List<IMapping> getReferenceMappings(IModelElement ownerModelElement, String targetPlatform) {
 		List<IMapping> referenceMappings = new ArrayList<IMapping>();
 		for (IModelElement referenceModelElement : ownerModelElement.getReferences()) {
@@ -184,7 +189,7 @@ public class MappingResourceFactory {
 		List<IFile> mappingFiles = modelFileLookupHelper.getFilesByExtension(modelPath, "mapping");
 		return getMappingModelIfMatchesCriteria(ownerModelElement, targetPlatform, mappingFiles);
 	}
-
+	
 	private MappingModel getMappingModelIfMatchesCriteria(IModelElement ownerModelElement, String targetPlatform,
 			List<IFile> mappingFiles) {
 		IModelParser modelParser = ModelParserFactory.getInstance().getModelParser();

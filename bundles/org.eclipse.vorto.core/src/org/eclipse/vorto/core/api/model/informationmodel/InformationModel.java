@@ -32,7 +32,7 @@ public interface InformationModel extends Model {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Properties</em>' containment reference list.
+	 * @return the value of the '<em>Properties</em>' containment refer ence list.
 	 * @see org.eclipse.vorto.core.api.model.informationmodel.InformationModelPackage#getInformationModel_Properties()
 	 * @model containment="true"
 	 * @generated

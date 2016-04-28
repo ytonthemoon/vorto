@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.api;
 
+import java.io.File;
 import java.util.List;
 
 import org.eclipse.vorto.core.api.model.datatype.Property;
@@ -27,6 +28,8 @@ import org.eclipse.vorto.core.api.model.mapping.MappingRule;
  */
 public interface IMappingContext {
 
+	byte[] getNonMappingFile(String fileName);
+	
 	List<MappingRule> getAllRules();
 	
 	List<MappingRule> getMappingRulesByOperation(Operation operation);

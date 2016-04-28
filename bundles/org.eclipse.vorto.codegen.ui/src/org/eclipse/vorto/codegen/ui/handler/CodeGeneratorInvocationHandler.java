@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.ui.handler;
 
+import java.util.Map;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -85,6 +87,10 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 
 		for (MappingModel mappingModel : project.getMapping(targetPlatform)) {
 			mappingContext.addMappingModel(mappingModel);
+		}
+		
+		for(Map.Entry<String, byte[]> entry : project.getNonMappingFiles().entrySet()) {
+			mappingContext.addNonMappingFiles(entry.getKey(), entry.getValue());
 		}
 
 		return mappingContext;

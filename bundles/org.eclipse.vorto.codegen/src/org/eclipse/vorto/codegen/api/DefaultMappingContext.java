@@ -15,7 +15,9 @@
 package org.eclipse.vorto.codegen.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.vorto.core.api.model.datatype.Property;
@@ -37,6 +39,12 @@ import org.eclipse.vorto.core.api.model.mapping.StatusSource;
 public class DefaultMappingContext implements IMappingContext {
 
 	private List<MappingModel> allMappingModels = new ArrayList<MappingModel>();
+	private Map<String, byte[]> nonMappingFiles = new HashMap<String, byte[]>();
+	
+	@Override
+	public byte[] getNonMappingFile(String fileName) {
+		return nonMappingFiles.get(fileName);
+	}
 	
 	@Override
 	public List<MappingRule> getAllRules() {
@@ -50,8 +58,10 @@ public class DefaultMappingContext implements IMappingContext {
 	public void addMappingModel(MappingModel mappingModel) {
 		this.allMappingModels.add(mappingModel);
 	}
-
 	
+	public void addNonMappingFiles(String fileName, byte[] content) {
+		nonMappingFiles.put(fileName, content);
+	}
 
 	@Override
 	public List<MappingRule> getMappingRulesByOperation(Operation operation) {

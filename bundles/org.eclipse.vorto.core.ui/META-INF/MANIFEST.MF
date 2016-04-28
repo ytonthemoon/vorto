@@ -20,3 +20,5 @@ Export-Package: org.eclipse.vorto.core.model,
  org.eclipse.vorto.core.ui.handler.datatype,
  org.eclipse.vorto.core.ui.handler.functionblock,
  org.eclipse.vorto.core.ui.handler.infomodel
+Import-Package: com.google.common.base;version="15.0.0",
+ com.google.common.io
