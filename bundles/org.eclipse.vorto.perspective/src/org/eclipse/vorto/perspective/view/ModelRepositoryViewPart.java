@@ -1,17 +1,17 @@
-/*******************************************************************************
- *  Copyright (c) 2015, 2016 Bosch Software Innovations GmbH and others.
- *  All rights reserved. This program and the accompanying materials
- *  are made available under the terms of the Eclipse Public License v1.0
- *  and Eclipse Distribution License v1.0 which accompany this distribution.
- *   
- *  The Eclipse Public License is available at
- *  http://www.eclipse.org/legal/epl-v10.html
- *  The Eclipse Distribution License is available at
- *  http://www.eclipse.org/org/documents/edl-v10.php.
- *   
- *  Contributors:
- *  Bosch Software Innovations GmbH - Please refer to git log
- *******************************************************************************/
+/**
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ * Bosch Software Innovations GmbH - Please refer to git log
+ */
 package org.eclipse.vorto.perspective.view;
 
 import java.io.File;
@@ -32,6 +32,8 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
@@ -111,7 +113,25 @@ public class ModelRepositoryViewPart extends ViewPart {
 		});
 
 		searchField = createSearchField(parent, btnSearch);
+		searchField.addKeyListener(new KeyListener() {
 
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.keyCode == SWT.CR) {
+					String filter = searchField.getText();
+					try {
+						viewer.setInput(getModelRepo().search(filter));
+					} catch (Exception ex) {
+						ExceptionHandlerFactory.getHandler().handle(ex);
+					}
+				}
+				
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {}
+			
+		});
 		viewer = createTableViewer(parent, btnSearch);
 
 		initContextMenu();
@@ -297,7 +317,6 @@ public class ModelRepositoryViewPart extends ViewPart {
 		formData.right = new FormAttachment(100, -10);
 		button.setLayoutData(formData);
 		button.setText("Search");
-
 		return button;
 	}
 	

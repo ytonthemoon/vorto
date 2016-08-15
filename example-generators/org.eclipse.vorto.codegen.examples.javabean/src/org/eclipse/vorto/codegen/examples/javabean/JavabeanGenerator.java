@@ -1,17 +1,17 @@
-/*******************************************************************************
- * Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+/**
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
- *   
+ *
  * The Eclipse Public License is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * The Eclipse Distribution License is available at
  * http://www.eclipse.org/org/documents/edl-v10.php.
- *   
+ *
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
- *******************************************************************************/
+ */
 package org.eclipse.vorto.codegen.examples.javabean;
 
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
@@ -20,7 +20,7 @@ import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaClassGeneratorTask;
 import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaEnumGeneratorTask;
 import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaFunctionblockConfigurationGeneratorTask;
@@ -38,6 +38,8 @@ import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
 public class JavabeanGenerator implements IVortoCodeGenerator {
+	
+	public static final String KEY = "javabean";
 	
 	public static final String JAVA_PROJECT_SUFFIX = "_Java";
 	public static final String JAVA_FILE_EXTENSION = ".java";
@@ -113,7 +115,7 @@ public class JavabeanGenerator implements IVortoCodeGenerator {
 
 	@Override
 	public String getServiceKey() {
-		return "javabean";
+		return KEY;
 	}
 
 	
