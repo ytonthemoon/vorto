@@ -32,6 +32,13 @@
 		</snapshotRepository>
 	</distributionManagement>
 	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>cbi-releases</id>
+			<url>https://repo.eclipse.org/content/repositories/cbi-releases/</url>
+		</pluginRepository>
+	</pluginRepositories>
+	
 	<repositories>
 		<repository>
 			<id>eclipse</id>
