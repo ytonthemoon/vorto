@@ -66,7 +66,7 @@ public class ModelRepositoryClientTest {
 	
 	@Test
 	public void testSearchModelBySpecificName() throws Exception {
-		Collection<ModelInfo> models = modelRepo.search(new ModelQueryBuilder().name("XDK").build()).get();
+		Collection<ModelInfo> models = modelRepo.search(new ModelQueryBuilder().name("XDK").type(ModelType.InformationModel).build()).get();
 		assertTrue(models.size() == 1);
 	}
 	
