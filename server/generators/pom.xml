@@ -14,6 +14,7 @@
 
 	<modules>
 		<module>org.eclipse.vorto.codegen.service</module>
+		<module>org.eclipse.vorto.codegen.service.testframework</module>
 		<module>org.eclipse.vorto.codegen.service.gateway</module>
     </modules>
 
